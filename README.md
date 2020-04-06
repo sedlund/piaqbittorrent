@@ -19,7 +19,7 @@
   * Private Internet Access supports port forwarding required for torrenting.  Very few support this, without it your speeds will be slow.
 * Separate containers?
   * This architecture makes it easy to swap torrent clients, VPN providers and plug in more functionality with other containers by simply attaching to the VPN container network.
-  
+
 ## How
 
 * Edit the `docker-compose.yml`
