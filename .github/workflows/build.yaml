@@ -40,7 +40,7 @@ jobs:
 
         echo ::set-output name=build_date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
         echo ::set-output name=docker_platforms::linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
-        echo ::set-output name=docker_image::${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}
+        #echo ::set-output name=docker_image::${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}
 
     # https://github.com/crazy-max/ghaction-docker-buildx
     - name: Set up Docker Buildx
@@ -56,7 +56,7 @@ jobs:
         echo git_sha=$GITHUB_SHA
         echo version=${{ steps.prepare.outputs.version }}
         echo date=${{ steps.prepare.outputs.build_date }}
-        echo image=${{ steps.prepare.outputs.docker_image }}
+        #echo image=${{ steps.prepare.outputs.docker_image }}
         echo platforms=${{ steps.prepare.outputs.docker_platforms }}
         echo avail_platforms=${{ steps.buildx.outputs.platforms }}
 
@@ -67,12 +67,23 @@ jobs:
     - name: Docker Buildx (try build)
       run: |
         docker buildx bake \
-          --set ${{ github.event.repository.name }}.platform=${{ steps.prepare.outputs.docker_platforms }} \
-          --set ${{ github.event.repository.name }}.output=type=image,push=false \
-          --set ${{ github.event.repository.name }}.args.VERSION=${{ steps.prepare.outputs.version }} \
-          --set ${{ github.event.repository.name }}.args.BUILD_DATE=${{ steps.prepare.outputs.build_date }} \
-          --set ${{ github.event.repository.name }}.args.VCS_REF=${GITHUB_SHA} \
-          --set ${{ github.event.repository.name }}.tags="${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}" \
+          --set vpn.platform=${{ steps.prepare.outputs.docker_platforms }} \
+          --set qb.platform=${{ steps.prepare.outputs.docker_platforms }} \
+          --set vpn.output=type=image,push=false \
+          --set qb.output=type=image,push=false \
+          --set qb-web.output=type=image,push=false \
+          --set vpn.args.VERSION=${{ steps.prepare.outputs.version }} \
+          --set qb.args.VERSION=${{ steps.prepare.outputs.version }} \
+          --set qb-web.args.VERSION=${{ steps.prepare.outputs.version }} \
+          --set vpn.args.BUILD_DATE=${{ steps.prepare.outputs.build_date }} \
+          --set qb.args.BUILD_DATE=${{ steps.prepare.outputs.build_date }} \
+          --set qb-web.args.BUILD_DATE=${{ steps.prepare.outputs.build_date }} \
+          --set vpn.args.VCS_REF=${GITHUB_SHA} \
+          --set qb.args.VCS_REF=${GITHUB_SHA} \
+          --set qb-web.args.VCS_REF=${GITHUB_SHA} \
+          --set vpn.tags="${{ secrets.DOCKER_USERNAME }}/piavpn:${{ steps.prepare.outputs.version }}" \
+          --set qb.tags="${{ secrets.DOCKER_USERNAME }}/qbittorrent:${{ steps.prepare.outputs.version }}" \
+          --set qb-web.tags="${{ secrets.DOCKER_USERNAME }}/qb-web:${{ steps.prepare.outputs.version }}" \
           --file docker-compose.yaml
 
     - name: Docker Login
@@ -88,17 +99,30 @@ jobs:
       if: success()
       run: |
         docker buildx bake \
-          --set ${{ github.event.repository.name }}.platform=${{ steps.prepare.outputs.docker_platforms }} \
-          --set ${{ github.event.repository.name }}.output=type=image,push=false \
-          --set ${{ github.event.repository.name }}.args.VERSION=${{ steps.prepare.outputs.version }} \
-          --set ${{ github.event.repository.name }}.args.BUILD_DATE=${{ steps.prepare.outputs.build_date }} \
-          --set ${{ github.event.repository.name }}.args.VCS_REF=${GITHUB_SHA} \
-          --set ${{ github.event.repository.name }}.tags="${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}" \
+          --set vpn.platform=${{ steps.prepare.outputs.docker_platforms }} \
+          --set qb.platform=${{ steps.prepare.outputs.docker_platforms }} \
+          --set vpn.output=type=image,push=true \
+          --set qb.output=type=image,push=true \
+          --set qb-web.output=type=image,push=true \
+          --set vpn.args.VERSION=${{ steps.prepare.outputs.version }} \
+          --set qb.args.VERSION=${{ steps.prepare.outputs.version }} \
+          --set qb-web.args.VERSION=${{ steps.prepare.outputs.version }} \
+          --set vpn.args.BUILD_DATE=${{ steps.prepare.outputs.build_date }} \
+          --set qb.args.BUILD_DATE=${{ steps.prepare.outputs.build_date }} \
+          --set qb-web.args.BUILD_DATE=${{ steps.prepare.outputs.build_date }} \
+          --set vpn.args.VCS_REF=${GITHUB_SHA} \
+          --set qb.args.VCS_REF=${GITHUB_SHA} \
+          --set qb-web.args.VCS_REF=${GITHUB_SHA} \
+          --set vpn.tags="${{ secrets.DOCKER_USERNAME }}/piavpn:${{ steps.prepare.outputs.version }}" \
+          --set qb.tags="${{ secrets.DOCKER_USERNAME }}/qbittorrent:${{ steps.prepare.outputs.version }}" \
+          --set qb-web.tags="${{ secrets.DOCKER_USERNAME }}/qb-web:${{ steps.prepare.outputs.version }}" \
           --file docker-compose.yaml
     
     - name: Docker Check Manifest
       if: always() && startsWith(github.ref, 'refs/tags/v')
       run: |
+        docker buildx imagetools inspect ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}
+        docker buildx imagetools inspect ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}
         docker buildx imagetools inspect ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}
 
     - name: Clear
