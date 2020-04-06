@@ -28,8 +28,9 @@ Multi-Architecture images in the Docker registry for amd64, arm64, armv7 and arm
 * Change PIA_AUTH to be your Username:Password
 * Change PIA_SERVER to your closest port forwarding enabled VPN server.
 * Add your your local networks to LOCAL_NETS (space separated) to add to the routing table so  you can access the WebUI
+* Add the local path that you want qBittorrent to use to store config and torrents in the volumes section of the qb service.
 * The default WebUI login is admin / adminadmin .  Once you login change the password then update QBPASS in the compose file, then have docker-compose restart the container to make sure all is working as expected.
-* To use the optional 3rd party WebUI for qBittorrent go into the qBittorrent settings in the WebUI tab and put /qb/qb-web in the path field and check the `Use alternative WebUI` box.  Once you hit save you it will bring you to the other WebUI where you can setup your RSS feeds.  You can switch back and forth between the UI's as needed.
+* To use the optional alternative WebUI for qBittorrent go into the qBittorrent settings in the WebUI tab and put /qb/qb-web in the path field and check the `Use alternative WebUI` box.  Once you hit save you it will bring you to the other WebUI where you can setup your RSS feeds.  You can switch back and forth between the UI's as needed.
 
 Now run `docker-compose up -d`
 
