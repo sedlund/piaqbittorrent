@@ -1,0 +1,107 @@
+name: build
+on:
+  pull_request:
+    branches:
+      - 'master'
+      - 'v*'
+    paths:
+      - '.github/workflows/build.yml'
+      - 'docker-compose.yaml'
+      - '**/Dockerfile'
+      - '**/start.sh'
+  push:
+    branches:
+      - 'master'
+      - 'v*'
+    tags:
+      - 'v*'
+    paths:
+      - '.github/workflows/build.yml'
+      - 'docker-compose.yaml'
+      - '**/Dockerfile'
+      - '**/start.sh'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Prepare
+      id: prepare
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          echo ::set-output name=version::${GITHUB_REF#refs/tags/v}
+        elif [[ $GITHUB_REF == refs/heads/master ]]; then
+          echo ::set-output name=version::latest
+        elif [[ $GITHUB_REF == refs/heads/* ]]; then
+          echo ::set-output name=version::${GITHUB_REF#refs/heads/}
+        else
+          echo ::set-output name=version::snapshot
+        fi
+
+        echo ::set-output name=build_date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+        echo ::set-output name=docker_platforms::linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+        echo ::set-output name=docker_image::${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}
+
+    # https://github.com/crazy-max/ghaction-docker-buildx
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: crazy-max/ghaction-docker-buildx@v1
+      with:
+        version: latest
+
+    - name: Environment
+      run: |
+        echo home=$HOME
+        echo git_ref=$GITHUB_REF
+        echo git_sha=$GITHUB_SHA
+        echo version=${{ steps.prepare.outputs.version }}
+        echo date=${{ steps.prepare.outputs.build_date }}
+        echo image=${{ steps.prepare.outputs.docker_image }}
+        echo platforms=${{ steps.prepare.outputs.docker_platforms }}
+        echo avail_platforms=${{ steps.buildx.outputs.platforms }}
+
+    # https://github.com/actions/checkout
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Docker Buildx (try build)
+      run: |
+        docker buildx bake \
+          --set ${{ github.event.repository.name }}.platform=${{ steps.prepare.outputs.docker_platforms }} \
+          --set ${{ github.event.repository.name }}.output=type=image,push=false \
+          --set ${{ github.event.repository.name }}.args.VERSION=${{ steps.prepare.outputs.version }} \
+          --set ${{ github.event.repository.name }}.args.BUILD_DATE=${{ steps.prepare.outputs.build_date }} \
+          --set ${{ github.event.repository.name }}.args.VCS_REF=${GITHUB_SHA} \
+          --set ${{ github.event.repository.name }}.tags="${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}" \
+          --file docker-compose.yaml
+
+    - name: Docker Login
+      if: success()
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        
+      run: |
+        echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
+
+    - name: Docker Buildx (push)
+      if: success()
+      run: |
+        docker buildx bake \
+          --set ${{ github.event.repository.name }}.platform=${{ steps.prepare.outputs.docker_platforms }} \
+          --set ${{ github.event.repository.name }}.output=type=image,push=false \
+          --set ${{ github.event.repository.name }}.args.VERSION=${{ steps.prepare.outputs.version }} \
+          --set ${{ github.event.repository.name }}.args.BUILD_DATE=${{ steps.prepare.outputs.build_date }} \
+          --set ${{ github.event.repository.name }}.args.VCS_REF=${GITHUB_SHA} \
+          --set ${{ github.event.repository.name }}.tags="${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}" \
+          --file docker-compose.yaml
+    
+    - name: Docker Check Manifest
+      if: always() && startsWith(github.ref, 'refs/tags/v')
+      run: |
+        docker buildx imagetools inspect ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}
+
+    - name: Clear
+      if: always()
+      run: |
+        rm -f ${HOME}/.docker/config.json

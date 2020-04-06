@@ -1,0 +1,61 @@
+# vim: et:sts=2
+version: "3.2"
+services:
+
+  vpn:
+    build:
+      context: ./piavpn
+    image: sedlund/piavpn
+    restart: on-failure
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8080:8080
+    cap_add:
+      - NET_ADMIN
+    dns:
+      - 209.222.18.222
+      - 209.222.18.218
+    environment:
+      # Change to your PIA login
+      - PIA_AUTH=MyPIAuser:MyPIAPassword
+      - PIA_SERVER=CA Torronto
+      # Change to your local network address
+      - LOCAL_NET=192.168.1.0/24
+
+  qb:
+    build:
+      context: ./qbittorrent
+    image: sedlund/qbittorrent
+    restart: on-failure
+    environment:
+      - QBUSER=admin
+      # Default is adminadmin / Change in WebUI first then change here
+      #- QBPASS=adminadmin
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      # Change the path to mount to your storage
+      - /mnt/to/your_storage:/data
+      - qb-web:/qb/qb-web
+    depends_on:
+      - vpn
+      - qb-web
+    # qBittorrent uses port 8080, but is using the vpn container network, so the port must be exposed there
+    network_mode: "service:vpn"
+
+  # Optional WebUI that has functionality to setup the RSS feature
+  # This container will exit 0, but allow the qb service to mount its volume
+  qb-web:
+    build:
+      context: ./qbittorrent/qb-web
+      args:
+        - RELEASE=https://github.com/CzBiX/qb-web/releases/download/nightly-fe3cc3/qb-web-20200403-093754.zip
+    image: sedlund/qb-web:20200403-093754
+    volumes:
+      - qb-web:/webui
+    # You can uncomment this if you want this container to run for some reason
+    #command: sleep infinity
+
+volumes:
+  data:
+  qb-web:
