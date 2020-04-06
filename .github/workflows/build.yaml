@@ -5,7 +5,7 @@ on:
       - 'master'
       - 'v*'
     paths:
-      - '.github/workflows/build.yml'
+      - '.github/workflows/build.yaml'
       - 'docker-compose.yaml'
       - '**/Dockerfile'
       - '**/start.sh'
@@ -16,7 +16,7 @@ on:
     tags:
       - 'v*'
     paths:
-      - '.github/workflows/build.yml'
+      - '.github/workflows/build.yaml'
       - 'docker-compose.yaml'
       - '**/Dockerfile'
       - '**/start.sh'
