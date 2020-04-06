@@ -8,6 +8,8 @@
 
 [qBittorrent](https://github.com/qbittorrent/qBittorrent) with [QB-Web](https://github.com/CzBiX/qb-web) interface for setting up RSS downloading and OpenVPN connecting to [Private Internet Access](https://www.privateinternetaccess.com/pages/buy-vpn/traveltech) with port forwarding.
 
+Multi-Architecture images in the Docker registry for amd64, arm64, armv7 and armv6
+
 ## Why
 
 * qBittorrent instead of Transmission?
