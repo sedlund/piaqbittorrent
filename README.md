@@ -2,7 +2,7 @@
 
 [![Docker Automated build](https://img.shields.io/docker/automated/sedlund/qbittorrent.svg)](https://hub.docker.com/r/sedlund/qbittorrent/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sedlund/qbittorrent.svg)](https://hub.docker.com/r/sedlund/qbittorrent/)
-[![Join the chat at https://gitter.im/piaqbittorrent/Lobby](https://badges.gitter.im/piaqbittorrent/Lobby.svg)](https://gitter.im/piaqbittorrent/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/piaqbittorrent/community.svg)](https://gitter.im/piaqbittorrent/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## What
 
