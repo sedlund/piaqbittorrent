@@ -50,10 +50,10 @@ services:
       context: ./qbittorrent/qb-web
       args:
         - RELEASE=https://github.com/CzBiX/qb-web/releases/download/nightly-e21d02/qb-web-20200415-003646.zip
-    image: sedlund/qb-web:20200415-003646
+    image: sedlund/qb-web
     volumes:
       - qb-web:/webui
-    # You can uncomment this if you want this container to run for some reason
+    # You can uncomment below if you want this container to run for some reason
     #command: sleep infinity
 
 volumes:

@@ -43,7 +43,7 @@ get_vpn_port () {
 qb_login () {
     wait_for_resp \
         "curl --include --retry 3 --header 'Referer: http://localhost:8080' --data username=${QBUSER}\&password=${QBPASS} ${QBLOGIN} | grep set-cookie | cut -d : -f 2 | cut -d \; -f 1" \
-        "No respoonse from qBittorrent API" \
+        "No response from qBittorrent API" \
         && QBCOOKIE="${OUT}"
 }
 
