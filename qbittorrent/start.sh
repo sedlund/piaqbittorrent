@@ -54,14 +54,16 @@ qb_set_listen_port () {
         "No response from qBittorrent API"
 }
 
-### Main loop
+### MAIN
+
+qb_login
+qb_set_listen_port
+
 while true; do
     # watch the tunnel / if the vpn container exits this needs to restart to reattach to its network
     if ip link show tun0 >/dev/null; then
         get_vpn_port
-        qb_login
-        qb_set_listen_port
-        sleep 10
+        sleep 30
     else
         echo "VPN tunnel is down, stopping container to wait for it to be restarted."
         sleep 3

@@ -1,4 +1,4 @@
-FROM alpine:3 AS builder
+FROM --platform=$BUILDPLATFORM alpine:3 AS builder
 
 ARG PIAVPN="https://www.privateinternetaccess.com/openvpn/openvpn.zip"
 
