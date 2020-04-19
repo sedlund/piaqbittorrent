@@ -57,12 +57,12 @@ qb_set_listen_port () {
 ### MAIN
 
 qb_login
-qb_set_listen_port
 
 while true; do
     # watch the tunnel / if the vpn container exits this needs to restart to reattach to its network
     if ip link show tun0 >/dev/null; then
         get_vpn_port
+        qb_set_listen_port
         sleep 30
     else
         echo "VPN tunnel is down, stopping container to wait for it to be restarted."
