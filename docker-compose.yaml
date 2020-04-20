@@ -9,6 +9,7 @@ services:
     restart: on-failure
     volumes:
       - /etc/localtime:/etc/localtime:ro
+    # Expose ports from other containers that connect to this network
     ports:
       - 8080:8080
     cap_add:
@@ -16,22 +17,13 @@ services:
     dns:
       - 209.222.18.222
       - 209.222.18.218
-    environment:
-      # Change to your PIA login
-      - PIA_AUTH=MyPIAuser:MyPIAPassword
-      - PIA_SERVER=CA Torronto
-      # Change to your local network address
-      - LOCAL_NET=192.168.1.0/24
+    env_file: docker-compose-vpn.env
 
   qb:
     build:
       context: ./qbittorrent
     image: sedlund/qbittorrent
     restart: on-failure
-    environment:
-      - QBUSER=admin
-      # Default is adminadmin / Change in WebUI first then change here
-      #- QBPASS=adminadmin
     volumes:
       - /etc/localtime:/etc/localtime:ro
       # Change the path to mount to your storage
@@ -42,6 +34,7 @@ services:
       - qb-web
     # qBittorrent uses port 8080, but is using the vpn container network, so the port must be exposed there
     network_mode: "service:vpn"
+    env_file: docker-compose-qb.env
 
   # Optional WebUI that has functionality to setup the RSS feature
   # This container will exit 0, but allow the qb service to mount its volume
@@ -53,8 +46,6 @@ services:
     image: sedlund/qb-web
     volumes:
       - qb-web:/webui
-    # You can uncomment below if you want this container to run for some reason
-    #command: sleep infinity
 
 volumes:
   data:
