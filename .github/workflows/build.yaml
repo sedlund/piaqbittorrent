@@ -121,9 +121,10 @@ jobs:
           --file docker-compose.yaml
 
     - name: Docker Check Manifest
-      if: success() && startsWith(github.ref, 'refs/tags/v')
+      #if: success() && startsWith(github.ref, 'refs/tags/v')
+      if: success()
       run: |
-        docker buildx imagetools inspect ${{ secrets.DOCKER_USERNAME }}/vpn:${{ steps.prepare.outputs.version }}
+        docker buildx imagetools inspect ${{ secrets.DOCKER_USERNAME }}/piavpn:${{ steps.prepare.outputs.version }}
         docker buildx imagetools inspect ${{ secrets.DOCKER_USERNAME }}/qb:${{ steps.prepare.outputs.version }}
         docker buildx imagetools inspect ${{ secrets.DOCKER_USERNAME }}/qb-web:${{ steps.prepare.outputs.version }}
 
