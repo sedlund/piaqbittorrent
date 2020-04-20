@@ -56,7 +56,7 @@ serve_port () {
     SERVE_PORT=9047
     echo "Serving requests for PIA portforward on port ${SERVE_PORT}"
     # shellcheck disable=SC2169 # busybox ash supports 'echo -e'
-    while true; do  echo -e "HTTP/1.1 200 OK\n\n ${JSON}" | nc -l -p ${SERVE_PORT}; done
+    while true; do echo -e "HTTP/1.1 200 OK\n\n ${JSON}" | nc -l -p ${SERVE_PORT}; done
 }
 
 echo "${PIA_AUTH}" | sed 's#:#\n#g' > ${AUTHFILE}

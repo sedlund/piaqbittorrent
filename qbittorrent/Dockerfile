@@ -1,6 +1,5 @@
 FROM alpine:3
 
-ARG RSSWEB="https://github.com/CzBiX/qb-web/archive/nightly-35f2b5.tar.gz"
 RUN echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
 RUN echo "@edgecommunity http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
