@@ -125,7 +125,7 @@ jobs:
       if: success()
       run: |
         docker buildx imagetools inspect ${{ secrets.DOCKER_USERNAME }}/piavpn:${{ steps.prepare.outputs.version }}
-        docker buildx imagetools inspect ${{ secrets.DOCKER_USERNAME }}/qb:${{ steps.prepare.outputs.version }}
+        docker buildx imagetools inspect ${{ secrets.DOCKER_USERNAME }}/qbittorrent:${{ steps.prepare.outputs.version }}
         docker buildx imagetools inspect ${{ secrets.DOCKER_USERNAME }}/qb-web:${{ steps.prepare.outputs.version }}
 
     - name: Clear
