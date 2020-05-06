@@ -42,7 +42,7 @@ services:
     build:
       context: ./qbittorrent/qb-web
       args:
-        - RELEASE=https://github.com/CzBiX/qb-web/releases/download/nightly-0cdd5c/qb-web-20200430-001303.zip
+        - RELEASE=https://github.com/CzBiX/qb-web/releases/download/nightly-219f86/qb-web-20200505-212920.zip
     image: sedlund/qb-web
     volumes:
       - qb-web:/webui

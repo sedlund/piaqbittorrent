@@ -1,0 +1,14 @@
+@startuml overview
+cloud Internet {
+    node "Private\nInternet\nAccess" as pia
+}
+
+frame sedlund/piaqbittorrent {
+    node vpn
+    node qb
+    pia -- vpn
+    folder qbweb
+    vpn -- qb
+    qb .right. qbweb
+}
+@enduml

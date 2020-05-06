@@ -13,7 +13,7 @@ Multi-Architecture images in the Docker registry for amd64, arm64, armv7 and arm
 ## Why
 
 * qBittorrent instead of Transmission?
-  * Tranmission does not have asynchronus disk IO.  Single threaded IO when allocating or moving torrents makes the UI inaccessable and can lock up a whole system until it completes.  qBittorrent does not have this problem.
+  * Transmission does not have asynchronous disk IO.  Single threaded IO when allocating or moving torrents makes the UI inaccessible and can lock up a whole system until it completes.  qBittorrent does not have this problem.
   * Transmission does not include an RSS auto downloader.  qBittorrent has an easy to use one that does the job.
 * Only Private Internet Access VPN?
   * Containers should be purpose built for simplicity.
@@ -31,11 +31,13 @@ Multi-Architecture images in the Docker registry for amd64, arm64, armv7 and arm
 
 Now run `docker-compose up -d`
 
+![system overview](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/sedlund/piaqbittorrent/master/assets/overview.puml)
+
 ## Help me help you
 
-If you like this or want help, send me some shekles!  If you want a feature, lets discuss it and you can send me money.
+If you like this or want help, send me some shekels!  If you want a feature, lets discuss it and you can send me money.
 
-Make a one time or recuring donation through PayPal.
+Make a one time or recurring donation through PayPal.
 
 [![Donate with PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZZJZTUFQBLNBJ&source=url)
 
