@@ -1,13 +1,23 @@
 @startuml overview
 cloud Internet {
     node "Private\nInternet\nAccess" as pia
+    node seed1
+    node peer1
+    node peer1
+    node peer2
+    seed1 -> peer1
+    seed1 -down-> peer2
+    seed1 -left-> pia
+    peer1 <-> peer2
+    peer1 -- pia
+    peer2 -- pia
 }
 
 frame sedlund/piaqbittorrent {
     node vpn
     node qb
-    pia -- vpn
-    folder qbweb
+    pia -right-> vpn
+    folder qbweb {
     vpn -- qb
     qb .right. qbweb
 }
