@@ -31,7 +31,9 @@ Multi-Architecture images in the Docker registry for amd64, arm64, armv7 and arm
 
 Now run `docker-compose up -d`
 
-![system overview](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/sedlund/piaqbittorrent/master/assets/overview.puml)
+## System Overview
+
+![system overview](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/sedlund/piaqbittorrent/master/assets/overview.puml&v=1)
 
 ## Help me help you
 
