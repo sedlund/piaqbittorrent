@@ -1,0 +1,55 @@
+@startuml overview
+
+cloud Internet {
+
+    cloud "Private\nInternet\nAccess" as pia
+
+    node seed1
+    node peer1
+    node peer1
+    node peer2
+
+    seed1 -down-> peer1
+    seed1 -down-> peer2
+    seed1 -down-> pia
+
+    peer1 <-> peer2
+    peer1 -> pia
+    peer2 -left-> pia
+
+}
+
+frame sedlund/piaqbittorrent {
+
+    package vpn {
+        agent OpenVPN as ovpn
+        component get_port_forward
+        component serve_port
+    }
+
+    ovpn -down-> get_port_forward
+    get_port_forward -down-> serve_port
+
+    package qb {
+        agent qBittorrent as qbt
+        component get_vpn_port 
+        component qb_set_listen_port
+    }
+
+    ovpn <-right-> qbt
+
+    serve_port -left-> get_vpn_port
+    get_vpn_port -up-> qb_set_listen_port
+    qb_set_listen_port -up-> qbt
+
+    package qb-web {
+        artifact "CzBiX/qb-web" as qbweb
+    }
+
+    qbt .right. qbweb
+
+}
+
+pia -down--> ovpn
+
+@enduml
